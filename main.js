@@ -4,6 +4,7 @@ let correo = "";
 let enviar = "";
 let ayuda = "";
 let buscar = "";
+let caracteristica = "";
 
 function eliminar() {
     while (document.body.firstChild) {
@@ -118,7 +119,21 @@ const functionBuscar = () => {
     mostrarPrompt("How can we assist you? 1-SEARCH POTS / 2-PAGE ERROR / 3-OTHER   SELECT ONLY THE OPTION NUMBER", "", (valor) => {
         const opcion = valor.toLowerCase();
         if (opcion === "1") {
-            buscarPorId();
+            const functionBuscarPorTipos = () => {
+                mostrarPrompt("Search for a pot by: 1- Id / 2- Size / 3- Price    SELECT ONLY THE OPTION NUMBER", "", (tipos) => {
+                    caracteristica = tipos.toLowerCase();
+                    if (caracteristica === "1") {
+                        buscarPorId();
+                    } else if (caracteristica === "2") {
+                        buscarPorTam();
+                    } else if (caracteristica === "3") {
+                        buscarPorPrecio();
+                    } else {
+                        mensajeAlert("You did not enter the value correctly, please try again!", functionBuscarPorTipos);
+                    }
+                });
+            };
+            functionBuscarPorTipos();
         } else if (opcion === "2") {
             reportarError();
         } else if (opcion === "3") {
@@ -144,6 +159,56 @@ const buscarPorId = () => {
         } else {
             mensajeAlert("You did not select a valid Id. Please try again.", buscarPorId);
         }
+    });
+};
+
+const buscarPorPrecio = () => {
+    mostrarPrompt("Enter the maximum price you are willing to spend.  ENTER ONLY NUMBERS", "", (valor) => {
+        const buscarPrecio = parseInt(valor);
+        let result = "";
+        if (buscarPrecio >= 300) {
+            const filteredProducts = productos.filter((item) => item.precio <= buscarPrecio);
+            result = filteredProducts.map((item) => `
+                Id: ${item.id}
+                Size: ${item.tamaño}
+                Price: $${item.precio}
+            `).join();
+        } else {
+            result = "No products available within the specified price range.";
+        }
+        mensajeAlert(result, functionBuscar);
+    });
+};
+
+const buscarPorTam = () => {
+    mostrarPrompt("Enter the Size of the product you are looking for. 1-Small / 2-Medium / 3-Big   ENTER ONLY THE NUMBER", "", (valor) => {
+        const buscarTamaño = parseInt(valor);
+        let result = "";
+        if (buscarTamaño === 1) {
+            const filteredProducts = productos.filter((item) => item.tamaño.toLowerCase() === "small");
+            result = filteredProducts.map((item) => `
+                Id: ${item.id}
+                Size: ${item.tamaño}
+                Price: $${item.precio}
+            `).join("\n");
+        } else if (buscarTamaño === 2) {
+            const filteredProducts = productos.filter((item) => item.tamaño.toLowerCase() === "medium");
+            result = filteredProducts.map((item) => `
+                Id: ${item.id}
+                Size: ${item.tamaño}
+                Price: $${item.precio}
+            `).join("\n");
+        } else if (buscarTamaño === 3) {
+            const filteredProducts = productos.filter((item) => item.tamaño.toLowerCase() === "large");
+            result = filteredProducts.map((item) => `
+                Id: ${item.id}
+                Size: ${item.tamaño}
+                Price: $${item.precio}
+            `).join("\n");
+        } else {
+            result = "No products available with the specified size.";
+        }
+        mensajeAlert(result, functionBuscar);
     });
 };
 
