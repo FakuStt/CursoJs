@@ -1,10 +1,15 @@
 let usuario = "";
+let usuarioStorage = localStorage.getItem("usuario");
 let sexo = "";
 let correo = "";
 let enviar = "";
 let ayuda = "";
 let buscar = "";
 let caracteristica = "";
+let opcionOtro2 = "";
+let edad = "";
+let clave = "";
+let error = "";
 
 function eliminar() {
     while (document.body.firstChild) {
@@ -39,9 +44,9 @@ const mostrarPrompt = (mensajePrompt, valorPrompt, promptCallback) => {
     input.type = "text";
     input.value = valorPrompt;
     let botonAceptar = document.createElement("button");
-    botonAceptar.textContent = "Accept";
+    botonAceptar.textContent = "Aceptar";
     let botonCancelar = document.createElement("button");
-    botonCancelar.textContent = "Cancel";
+    botonCancelar.textContent = "Cancelar";
     contenedorPrompt.append(label, input, botonAceptar, botonCancelar);
     document.body.append(contenedorPrompt);
 
@@ -52,25 +57,35 @@ const mostrarPrompt = (mensajePrompt, valorPrompt, promptCallback) => {
         }
     };
 
-    botonAceptar.addEventListener("click", () => {
+    const aceptarPrompt = () => {
         cerrarPrompt(input.value);
-    });
+    };
 
-    botonCancelar.addEventListener("click", () => {
+    const cancelarPrompt = () => {
         cerrarPrompt(null);
+    };
+
+    botonAceptar.addEventListener("click", aceptarPrompt);
+    botonCancelar.addEventListener("click", cancelarPrompt);
+    input.addEventListener("keyup", (event) => {
+        if (event.key === "Enter") {
+            aceptarPrompt();
+        }
     });
 };
 
 const functionUsuario = () => {
-    mostrarPrompt("Enter your username:", "", (valor) => {
+    mostrarPrompt("Ingrese su usuario:", "", (valor) => {
         usuario = valor;
         const functionSexo = () => {
-            mostrarPrompt("Enter your gender: M/F", "", (valor) => {
+            mostrarPrompt("Ingrese su sexo: M/F", "", (valor) => {
                 sexo = valor.toLowerCase();
-                if (usuario !== "" && (sexo === "m" || sexo === "f")) {
-                    mensajeAlert(`Welcome ${usuario}!`, functionCorreo);
-                } else {
-                    mensajeAlert("You entered an incorrect username or gender. Please try again!", functionUsuario);
+                if (usuario !== "" && sexo === "m") {
+                    mensajeAlert(`Bienvenido ${usuario}!`, functionCorreo);
+                } else if (usuario !== "" && sexo === "f") {
+                    mensajeAlert(`Bienvenida ${usuario}!`, functionCorreo);
+                }else {
+                    mensajeAlert("Ingresaste mal tu nombre de usuario o tu sexo, vuelve a intentarlo!", functionUsuario);
                 }
             });
         };
@@ -79,48 +94,44 @@ const functionUsuario = () => {
 };
 
 const functionCorreo = () => {
-    mostrarPrompt(`Enter the email address associated with the username: ${usuario}`, "", (valor) => {
+    mostrarPrompt(`Ingrese el correo electronico vinculado al usuario: ${usuario}`, "", (valor) => {
         correo = valor;
-        if (correo.includes("@") && correo.includes(".com")) {
-            mensajeAlert("Your email address has been successfully entered!", enviarCorreo);
-        } else {
-            mensajeAlert("Incorrect email address, please try again!", functionCorreo);
-        }
+        correo.includes("@") && correo.includes(".com") ? mensajeAlert("Tu dirección de correo electrónico se ha ingresado con éxito!", enviarCorreo) : mensajeAlert("Dirección de correo electrónico incorrecta, vuelve a intentarlo!", functionCorreo);
     });
 };
 
 const enviarCorreo = () => {
-    mostrarPrompt(`Do you want to receive discount alerts to the following email: ${correo}? YES / NO`, "", (valor) => {
+    mostrarPrompt(`Deseas que cuando haya algún descuento te enviemos un aviso al siguiente correo: ${correo} ?     SI / NO`, "", (valor) => {
         enviar = valor.toLowerCase();
-        if (enviar === "yes") {
-            mensajeAlert("Great! We will send you an email with offers and promotions soon. In the meantime, feel free to browse our latest collection of pots on our website. Thank you!", functionAyuda);
+        if (enviar === "si") {
+            mensajeAlert("Genial! A la brevedad enviaremos un correo con las ofertas y promociones. Mientras tanto, te invitamos a ver nuestros últimos modelos de macetas en nuestra página. ¡Gracias!", functionAyuda);
         } else if (enviar === "no") {
-            mensajeAlert("Nevertheless, we invite you to explore our catalog. Thank you!", functionAyuda);
+            mensajeAlert("De todos modos, te invitamos a ver nuestro catálogo. ¡Gracias!", functionAyuda);
         } else {
-            mensajeAlert("Incorrect response. Please respond with 'YES' or 'NO'.", enviarCorreo);
+            mensajeAlert("Respuesta incorrecta. Por favor, responde con SI o NO.", enviarCorreo);
         }
     });
 };
 
 const functionAyuda = () => {
-    mostrarPrompt("Do you need assistance with anything? YES/NO", "", (valor) => {
+    mostrarPrompt("¿Necesitas ayuda con algo? SI/NO", "", (valor) => {
         ayuda = valor.toLowerCase();
-        if (ayuda === "yes") {
+        if (ayuda === "si") {
             functionBuscar();
         } else if (ayuda === "no") {
-            mensajeAlert("Thank you for visiting our page! We invite you to explore our beautiful catalog.");
+            mensajeAlert("Gracias por visitar nuestra pagina! Te invitamos a ver nuestro hermoso catalogo!");
         } else {
-            mensajeAlert("Incorrect response! Please try again!", functionAyuda);
+            mensajeAlert("Respuesta incorrecta, vuelve a intentarlo!", functionAyuda);
         }
     });
 };
 
 const functionBuscar = () => {
-    mostrarPrompt("How can we assist you? 1-SEARCH POTS / 2-PAGE ERROR / 3-OTHER   SELECT ONLY THE OPTION NUMBER", "", (valor) => {
+    mostrarPrompt("¿Con qué te podríamos ayudar? 1-BUSCAR MACETAS / 2-ERROR CON LA PÁGINA / 3-OTRO      SELECCIONE SOLO EL NÚMERO DE LA OPCIÓN", "", (valor) => {
         const opcion = valor.toLowerCase();
         if (opcion === "1") {
             const functionBuscarPorTipos = () => {
-                mostrarPrompt("Search for a pot by: 1- Id / 2- Size / 3- Price    SELECT ONLY THE OPTION NUMBER", "", (tipos) => {
+                mostrarPrompt("Buscar maceta por: 1- Id / 2- Tamaño / 3- Precio    SELECCIONA LA OPCIÓN POR EL NÚMERO", "", (tipos) => {
                     caracteristica = tipos.toLowerCase();
                     if (caracteristica === "1") {
                         buscarPorId();
@@ -129,7 +140,7 @@ const functionBuscar = () => {
                     } else if (caracteristica === "3") {
                         buscarPorPrecio();
                     } else {
-                        mensajeAlert("You did not enter the value correctly, please try again!", functionBuscarPorTipos);
+                        mensajeAlert("No ingresaste el valor correctamente! Vuelve a intentarlo!", functionBuscarPorTipos);
                     }
                 });
             };
@@ -137,15 +148,51 @@ const functionBuscar = () => {
         } else if (opcion === "2") {
             reportarError();
         } else if (opcion === "3") {
-            mensajeAlert(`Please contact us from your email address ${correo} to our email ojalamacetas@gmail.com. Thank you!`);
+            opcionOtro();
         } else {
-            mensajeAlert("You did not select any option. Please try again.", functionBuscar);
+            mensajeAlert("No seleccionaste ninguna opcion. Por favor vuelve a intentarlo!", functionBuscar);
+        }
+    });
+};
+
+const opcionOtro = () => {
+    mostrarPrompt("Selecciona el numero de la opcion: 1-Configuracion de usuario  /  2-Otro", "", (valor) => {
+        opcionOtro2 = parseInt(valor);
+        if (opcionOtro2 === 1) {
+            mensajeAlert(`Tu usuario es: ${usuario}`, () => {
+                mensajeAlert(`Tu genero es: ${sexo}`, () => {
+                    mensajeAlert(`Tu correo es: ${correo}`, () => {
+                        if (edad === "") {
+                            mostrarPrompt("Ingrese su edad:", "", (valor2) => {
+                                edad = valor2;
+                                mensajeAlert(`Tienes una edad de: ${edad}`, () => {
+                                    mostrarPrompt("Ingrese su contraseña:", "", (valor3) => {
+                                        clave = valor3;
+                                        mensajeAlert(`La contraseña ingresada es: ${clave}`);
+                                    });
+                                });
+                            });
+                        } else {
+                            mensajeAlert(`Tu edad es: ${edad}`, () => {
+                                mostrarPrompt("Ingresa tu contraseña:", "", (valor3) => {
+                                    clave = valor3;
+                                    mensajeAlert(`La contraseña ingresada es: ${clave}`);
+                                });
+                            });
+                        }
+                    });
+                });
+            });
+        } else if (opcionOtro2 === 2) {
+            mensajeAlert(`Por favor, comunícate con nosotros desde tu correo electrónico ${correo} a nuestro correo ojalamacetas@gmail.com. ¡Gracias!`);
+        } else {
+            mensajeAlert("No ingresaste ninguna opcion, intentalo devuelta!", opcionOtro);
         }
     });
 };
 
 const buscarPorId = () => {
-    mostrarPrompt("Enter the Id of the product you are looking for. 1 / 2 / 3   ENTER ONLY THE NUMBER", "", (valor) => {
+    mostrarPrompt("Ingresa el Id del producto que estas buscando. 1 / 2 / 3   SOLO INGRESE EL NUMERO", "", (valor) => {
         const buscarId = parseInt(valor);
         const resultado = productos.filter((item) => item.id === buscarId);
         if (resultado.length > 0) {
@@ -157,13 +204,13 @@ const buscarPorId = () => {
                 `, functionBuscar);
             });
         } else {
-            mensajeAlert("You did not select a valid Id. Please try again.", buscarPorId);
+            mensajeAlert("No ingresaste un ID valido, intenta nuevamente!", buscarPorId);
         }
     });
 };
 
 const buscarPorPrecio = () => {
-    mostrarPrompt("Enter the maximum price you are willing to spend.  ENTER ONLY NUMBERS", "", (valor) => {
+    mostrarPrompt("Ingrese hasta cuanto esta dispuesto gastar.  INGRESE SOLO NUMEROS", "", (valor) => {
         const buscarPrecio = parseInt(valor);
         let result = "";
         if (buscarPrecio >= 300) {
@@ -172,58 +219,65 @@ const buscarPorPrecio = () => {
                 Id: ${item.id}
                 Size: ${item.tamaño}
                 Price: $${item.precio}
-            `).join();
+            `).join("\n");
         } else {
-            result = "No products available within the specified price range.";
+            result = "No te alcanza para ninguna maceta!";
         }
         mensajeAlert(result, functionBuscar);
     });
 };
 
 const buscarPorTam = () => {
-    mostrarPrompt("Enter the Size of the product you are looking for. 1-Small / 2-Medium / 3-Big   ENTER ONLY THE NUMBER", "", (valor) => {
+    mostrarPrompt("Ingrese el tamaño que está buscando. 1- Chico / 2- Mediano / 3- Grande   SOLO INGRESE EL NUMERO DE LA OPCION", "", (valor) => {
         const buscarTamaño = parseInt(valor);
         let result = "";
         if (buscarTamaño === 1) {
-            const filteredProducts = productos.filter((item) => item.tamaño.toLowerCase() === "small");
+            const filteredProducts = productos.filter((item) => item.tamaño.toLowerCase() === "chica");
             result = filteredProducts.map((item) => `
                 Id: ${item.id}
                 Size: ${item.tamaño}
                 Price: $${item.precio}
             `).join("\n");
         } else if (buscarTamaño === 2) {
-            const filteredProducts = productos.filter((item) => item.tamaño.toLowerCase() === "medium");
+            const filteredProducts = productos.filter((item) => item.tamaño.toLowerCase() === "mediana");
             result = filteredProducts.map((item) => `
                 Id: ${item.id}
                 Size: ${item.tamaño}
                 Price: $${item.precio}
             `).join("\n");
         } else if (buscarTamaño === 3) {
-            const filteredProducts = productos.filter((item) => item.tamaño.toLowerCase() === "large");
+            const filteredProducts = productos.filter((item) => item.tamaño.toLowerCase() === "grande");
             result = filteredProducts.map((item) => `
                 Id: ${item.id}
                 Size: ${item.tamaño}
                 Price: $${item.precio}
             `).join("\n");
         } else {
-            result = "No products available with the specified size.";
+            result = "No hay productos disponibles para ese tamaño!";
         }
         mensajeAlert(result, functionBuscar);
     });
 };
 
 const reportarError = () => {
-    mostrarPrompt(`We apologize for the inconvenience! You can report your problem here, and we will resolve it as soon as possible. We will contact you by sending an email to ${correo}`, "", (valor) => {
-        const error = valor;
-        // Process the error report
-        mensajeAlert("Thank you for reporting the issue. We will resolve it as soon as possible.", functionAyuda);
+    mostrarPrompt(`Te pedimos disculpas! Por aquí puedes enviarnos tu problema y a la brevedad lo estaremos solucionando. Nos pondremos en contacto contigo enviando un correo a ${correo}`, "", (valor) => {
+        error = valor;
+        mensajeAlert("Gracias por reportar el problema! Lo resolveremos a la brevedad", functionAyuda);
     });
 };
 
 const productos = [
-    { id: 1, tamaño: "small", precio: 300 },
-    { id: 2, tamaño: "medium", precio: 400 },
-    { id: 3, tamaño: "large", precio: 450 }
+    { id: 1, tamaño: "chica", precio: 300 },
+    { id: 2, tamaño: "mediana", precio: 400 },
+    { id: 3, tamaño: "grande", precio: 450 }
 ];
 
+const arregloUsuario = []
+arregloUsuario.push(usuario);
+arregloUsuario.push(sexo);
+arregloUsuario.push(edad);
+arregloUsuario.push(clave);
+arregloUsuario.push(correo);
+
+localStorage.setItem("arregloUsuario", JSON.stringify(arregloUsuario))
 functionUsuario();
