@@ -19,7 +19,8 @@ function eliminar() {
 
 function botonSiguiente(callback) {
     let boton = document.createElement("button");
-    boton.innerHTML = "Next";
+    boton.innerHTML = "Siguiente";
+    boton.id = "botonSiguienteId";
     document.body.appendChild(boton);
     boton.addEventListener("click", () => {
         eliminar();
@@ -32,21 +33,27 @@ function botonSiguiente(callback) {
 function mensajeAlert(mensaje, callback) {
     let parrafo = document.createElement("p");
     parrafo.textContent = mensaje;
+    parrafo.id = "parrafoId"
     document.body.append(parrafo);
     botonSiguiente(callback);
 }
 
 const mostrarPrompt = (mensajePrompt, valorPrompt, promptCallback) => {
     let contenedorPrompt = document.createElement("div");
+    contenedorPrompt.id = "contenedorId"
     let label = document.createElement("label");
     label.textContent = mensajePrompt;
+    label.id = "labelId"
     let input = document.createElement("input");
     input.type = "text";
     input.value = valorPrompt;
+    input.id = "inputId"
     let botonAceptar = document.createElement("button");
     botonAceptar.textContent = "Aceptar";
+    botonAceptar.id = "botonAceptar";
     let botonCancelar = document.createElement("button");
     botonCancelar.textContent = "Cancelar";
+    botonCancelar.id = "botonCancelar"
     contenedorPrompt.append(label, input, botonAceptar, botonCancelar);
     document.body.append(contenedorPrompt);
 
@@ -81,11 +88,28 @@ const functionUsuario = () => {
             mostrarPrompt("Ingrese su sexo: M/F", "", (valor) => {
                 sexo = valor.toLowerCase();
                 if (usuario !== "" && sexo === "m") {
-                    mensajeAlert(`Bienvenido ${usuario}!`, functionCorreo);
+                    Swal.fire({
+                        title: `Usuario y sexo ingresado correctamente!`,
+                        text: `Bienvenido ${usuario}!`,
+                        icon: "success"
+                      });
+                      functionCorreo();
+                    
                 } else if (usuario !== "" && sexo === "f") {
-                    mensajeAlert(`Bienvenida ${usuario}!`, functionCorreo);
+                    Swal.fire({
+                        title: `Usuario y sexo ingresado correctamente!`,
+                        text: `Bienvenido ${usuario}!`,
+                        icon: "success"
+                      });
+                      functionCorreo();
                 }else {
-                    mensajeAlert("Ingresaste mal tu nombre de usuario o tu sexo, vuelve a intentarlo!", functionUsuario);
+                    Swal.fire({
+                        icon: "error",
+                        title: "Ingresaste mal tu nombre de usuario o tu sexo!",
+                        text: "Vuelve a intentarlo!",
+                        footer: '<a href="#">Reportar error</a>'
+                      });
+                    functionUsuario();
                 }
             });
         };
@@ -96,32 +120,38 @@ const functionUsuario = () => {
 const functionCorreo = () => {
     mostrarPrompt(`Ingrese el correo electronico vinculado al usuario: ${usuario}`, "", (valor) => {
         correo = valor;
-        correo.includes("@") && correo.includes(".com") ? mensajeAlert("Tu dirección de correo electrónico se ha ingresado con éxito!", enviarCorreo) : mensajeAlert("Dirección de correo electrónico incorrecta, vuelve a intentarlo!", functionCorreo);
+        correo.includes("@") && correo.includes(".com") ? Swal.fire({ title: `Tu dirección de correo electrónico se ha ingresado con éxito!`, text: `Todo correcto!`, icon: "success"}) && enviarCorreo() : 
+        Swal.fire({icon: "error", title: "Dirección de correo electrónico incorrecta", text: "Vuelve a intentarlo!"}) && functionCorreo();
     });
 };
 
 const enviarCorreo = () => {
-    mostrarPrompt(`Deseas que cuando haya algún descuento te enviemos un aviso al siguiente correo: ${correo} ?     SI / NO`, "", (valor) => {
+    mostrarPrompt(`Deseas que cuando haya algún descuento te enviemos un aviso al siguiente correo: ${correo} ?
+    SI / NO`, "", (valor) => {
         enviar = valor.toLowerCase();
         if (enviar === "si") {
-            mensajeAlert("Genial! A la brevedad enviaremos un correo con las ofertas y promociones. Mientras tanto, te invitamos a ver nuestros últimos modelos de macetas en nuestra página. ¡Gracias!", functionAyuda);
+            Swal.fire({title: "Genial! A la brevedad enviaremos un correo con las ofertas y promociones!", text: "Mientras tanto, te invitamos a ver nuestros últimos modelos de macetas en nuestra página. ¡Gracias!", icon: "success"});
+            functionAyuda();
         } else if (enviar === "no") {
-            mensajeAlert("De todos modos, te invitamos a ver nuestro catálogo. ¡Gracias!", functionAyuda);
+            Swal.fire({title: "De todos modos, te invitamos a ver nuestro catálogo.", text: "¡Gracias!", icon: "info"})
+            functionAyuda();
         } else {
-            mensajeAlert("Respuesta incorrecta. Por favor, responde con SI o NO.", enviarCorreo);
+            Swal.fire({title: "Respuesta incorrecta!", text: "Por favor, responde con SI o NO.", icon: "error"})
+            enviarCorreo();
         }
     });
 };
 
 const functionAyuda = () => {
-    mostrarPrompt("¿Necesitas ayuda con algo? SI/NO", "", (valor) => {
+    mostrarPrompt("¿Necesitas ayuda con algo?   SI/NO", "", (valor) => {
         ayuda = valor.toLowerCase();
         if (ayuda === "si") {
             functionBuscar();
         } else if (ayuda === "no") {
-            mensajeAlert("Gracias por visitar nuestra pagina! Te invitamos a ver nuestro hermoso catalogo!");
+            Swal.fire({title: "Gracias por visitar nuestra pagina!", text: "Te invitamos a ver nuestro hermoso catalogo!", icon: "info"})
         } else {
-            mensajeAlert("Respuesta incorrecta, vuelve a intentarlo!", functionAyuda);
+            Swal.fire({title: "Respuesta incorrecta!", text: "Vuelve a intentarlo!", icon: "error"})
+            functionAyuda();
         }
     });
 };
@@ -140,7 +170,8 @@ const functionBuscar = () => {
                     } else if (caracteristica === "3") {
                         buscarPorPrecio();
                     } else {
-                        mensajeAlert("No ingresaste el valor correctamente! Vuelve a intentarlo!", functionBuscarPorTipos);
+                        Swal.fire({title: "No ingresaste el valor correctamente!", text: "Vuelve a intentarlo!", icon: "error"})
+                        functionBuscarPorTipos();
                     }
                 });
             };
@@ -150,7 +181,8 @@ const functionBuscar = () => {
         } else if (opcion === "3") {
             opcionOtro();
         } else {
-            mensajeAlert("No seleccionaste ninguna opcion. Por favor vuelve a intentarlo!", functionBuscar);
+            Swal.fire({title: "No seleccionaste ninguna opcion!", text: "Vuelve a intentarlo!", icon: "error"})
+            functionBuscar();
         }
     });
 };
@@ -165,13 +197,13 @@ const opcionOtro = () => {
                         if (edad === "") {
                             mostrarPrompt("Ingrese su edad:", "", (valor2) => {
                                 edad = valor2;
-                                mensajeAlert(`Tienes una edad de: ${edad}`, () => {
-                                    mostrarPrompt("Ingrese su contraseña:", "", (valor3) => {
-                                        clave = valor3;
-                                        mensajeAlert(`La contraseña ingresada es: ${clave}`);
-                                    });
-                                });
-                            });
+                                    mensajeAlert(`Tienes una edad de: ${edad}`, () => {
+                                        mostrarPrompt("Ingrese su contraseña:", "", (valor3) => {
+                                            clave = valor3;
+                                            mensajeAlert(`La contraseña ingresada es: ${clave}`);
+                                        });
+                                    })
+                            })
                         } else {
                             mensajeAlert(`Tu edad es: ${edad}`, () => {
                                 mostrarPrompt("Ingresa tu contraseña:", "", (valor3) => {
@@ -184,9 +216,26 @@ const opcionOtro = () => {
                 });
             });
         } else if (opcionOtro2 === 2) {
-            mensajeAlert(`Por favor, comunícate con nosotros desde tu correo electrónico ${correo} a nuestro correo ojalamacetas@gmail.com. ¡Gracias!`);
+            Swal.fire({
+                title: `Por favor, comunícate con nosotros desde tu correo electrónico ${correo} a nuestro correo ojalamacetas@gmail.com. ¡Gracias!`,
+                showClass: {
+                  popup: `
+                    animate__animated
+                    animate__fadeInUp
+                    animate__faster
+                  `
+                },
+                hideClass: {
+                  popup: `
+                    animate__animated
+                    animate__fadeOutDown
+                    animate__faster
+                  `
+                }
+              });
         } else {
-            mensajeAlert("No ingresaste ninguna opcion, intentalo devuelta!", opcionOtro);
+            Swal.fire({title: "No ingresaste ninguna opcion!", text: "Vuelve a intentarlo!", icon: "error"})
+            opcionOtro();
         }
     });
 };
@@ -204,7 +253,8 @@ const buscarPorId = () => {
                 `, functionBuscar);
             });
         } else {
-            mensajeAlert("No ingresaste un ID valido, intenta nuevamente!", buscarPorId);
+            Swal.fire({title: "No ingresaste un ID valido!", text: "Intentalo nuevamente!", icon: "error"})
+            buscarPorId();
         }
     });
 };
@@ -223,7 +273,8 @@ const buscarPorPrecio = () => {
         } else {
             result = "No te alcanza para ninguna maceta!";
         }
-        mensajeAlert(result, functionBuscar);
+        Swal.fire(result);
+        functionBuscar();
     });
 };
 
@@ -255,14 +306,16 @@ const buscarPorTam = () => {
         } else {
             result = "No hay productos disponibles para ese tamaño!";
         }
-        mensajeAlert(result, functionBuscar);
+        Swal.fire(result);
+        functionBuscar();
     });
 };
 
 const reportarError = () => {
     mostrarPrompt(`Te pedimos disculpas! Por aquí puedes enviarnos tu problema y a la brevedad lo estaremos solucionando. Nos pondremos en contacto contigo enviando un correo a ${correo}`, "", (valor) => {
         error = valor;
-        mensajeAlert("Gracias por reportar el problema! Lo resolveremos a la brevedad", functionAyuda);
+        Swal.fire("Gracias por reportar el problema! Lo resolveremos a la brevedad");
+        functionAyuda();
     });
 };
 
@@ -280,4 +333,15 @@ arregloUsuario.push(clave);
 arregloUsuario.push(correo);
 
 localStorage.setItem("arregloUsuario", JSON.stringify(arregloUsuario))
-functionUsuario();
+
+
+function mostrarEmoji() {
+    fetch("https://emojihub.yurace.pro/api/all")
+      .then((response) => response.json())
+      .then((data) => {
+        let emoji = data[Math.floor(Math.random() * data.length)];
+        alert("¡Bienvenido! " + parse(emoji.uniCode));
+      });
+    }
+mostrarEmoji();
+  functionUsuario();
