@@ -335,13 +335,19 @@ arregloUsuario.push(correo);
 localStorage.setItem("arregloUsuario", JSON.stringify(arregloUsuario))
 
 
-function mostrarEmoji() {
-    fetch("https://emojihub.yurace.pro/api/all")
+
+  
+const mostrarEmoji = () => {
+    fetch("https://emojihub.yurace.pro/api/random")
       .then((response) => response.json())
       .then((data) => {
-        let emoji = data[Math.floor(Math.random() * data.length)];
-        alert("¡Bienvenido! " + parse(emoji.uniCode));
+        Swal.fire({ title: "Hola nuevamente!", text: `Tu categoria es: ${data.category}`, icon: "info" });
       });
-    }
-mostrarEmoji();
+  };
+  
+  mostrarEmoji();
+  
+  
+  
+
   functionUsuario();
