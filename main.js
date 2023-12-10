@@ -1,5 +1,5 @@
 let usuario = "";
-let usuarioStorage = localStorage.getItem("usuario");
+
 let sexo = "";
 let correo = "";
 let enviar = "";
@@ -93,6 +93,8 @@ const functionUsuario = () => {
                         text: `Bienvenido ${usuario}!`,
                         icon: "success"
                       });
+                      localStorage.setItem("usuario", usuario);
+                      localStorage.setItem("sexo", sexo);
                       functionCorreo();
                     
                 } else if (usuario !== "" && sexo === "f") {
@@ -101,6 +103,8 @@ const functionUsuario = () => {
                         text: `Bienvenido ${usuario}!`,
                         icon: "success"
                       });
+                      localStorage.setItem("usuario", usuario)
+                      localStorage.setItem("sexo", sexo);
                       functionCorreo();
                 }else {
                     Swal.fire({
@@ -120,7 +124,7 @@ const functionUsuario = () => {
 const functionCorreo = () => {
     mostrarPrompt(`Ingrese el correo electronico vinculado al usuario: ${usuario}`, "", (valor) => {
         correo = valor;
-        correo.includes("@") && correo.includes(".com") ? Swal.fire({ title: `Tu dirección de correo electrónico se ha ingresado con éxito!`, text: `Todo correcto!`, icon: "success"}) && enviarCorreo() : 
+        correo.includes("@") && correo.includes(".com") ? Swal.fire({ title: `Tu dirección de correo electrónico se ha ingresado con éxito!`, text: `Todo correcto!`, icon: "success"}) && enviarCorreo() && localStorage.setItem("correo", correo) : 
         Swal.fire({icon: "error", title: "Dirección de correo electrónico incorrecta", text: "Vuelve a intentarlo!"}) && functionCorreo();
     });
 };
@@ -187,35 +191,250 @@ const functionBuscar = () => {
     });
 };
 
+let usuarioEnLocalStorage = localStorage.getItem("usuario");
+let sexoEnLocalStorage = localStorage.getItem("sexo");
+let correoEnLocalStorage = localStorage.getItem("correo");
+let edadEnLocalStorage = localStorage.getItem("edad");
+let claveEnLocalStorage = localStorage.getItem("clave");
+
+
 const opcionOtro = () => {
     mostrarPrompt("Selecciona el numero de la opcion: 1-Configuracion de usuario  /  2-Otro", "", (valor) => {
         opcionOtro2 = parseInt(valor);
         if (opcionOtro2 === 1) {
-            mensajeAlert(`Tu usuario es: ${usuario}`, () => {
-                mensajeAlert(`Tu genero es: ${sexo}`, () => {
-                    mensajeAlert(`Tu correo es: ${correo}`, () => {
-                        if (edad === "") {
-                            mostrarPrompt("Ingrese su edad:", "", (valor2) => {
-                                edad = valor2;
-                                    mensajeAlert(`Tienes una edad de: ${edad}`, () => {
-                                        mostrarPrompt("Ingrese su contraseña:", "", (valor3) => {
-                                            clave = valor3;
-                                            mensajeAlert(`La contraseña ingresada es: ${clave}`);
-                                        });
+            if (usuarioEnLocalStorage !== null) {
+                mensajeAlert(`Tu usuario es: ${usuarioEnLocalStorage}`, () => {
+
+                if (sexoEnLocalStorage !== null) {
+                    mensajeAlert(`Tu genero es: ${sexoEnLocalStorage}`, () => {
+
+                        if (correoEnLocalStorage !== null) {
+                            mensajeAlert(`Tu correo es: ${correoEnLocalStorage}`, () => {
+
+                                if (edadEnLocalStorage === null) {
+                                    mostrarPrompt("Ingrese su edad:", "", (valor2) => {
+                                        edad = valor2;
+                                        localStorage.setItem("edad", edad);
+                                            mensajeAlert(`Tienes una edad de: ${edad}`, () => {
+                                                mostrarPrompt("Ingrese su contraseña:", "", (valor3) => {
+                                                    clave = valor3;
+                                                    localStorage.setItem("clave", clave);
+                                                    mensajeAlert(`La contraseña ingresada es: ${clave}`);
+                                                });
+                                            })
                                     })
-                            })
-                        } else {
-                            mensajeAlert(`Tu edad es: ${edad}`, () => {
-                                mostrarPrompt("Ingresa tu contraseña:", "", (valor3) => {
-                                    clave = valor3;
-                                    mensajeAlert(`La contraseña ingresada es: ${clave}`);
-                                });
+
+                                } else {
+                                    mensajeAlert(`Tu edad es: ${edadEnLocalStorage}`, () => {
+                                        mensajeAlert(`Tu clave es: ${claveEnLocalStorage}`, () => {
+                                            functionAyuda();
+                                        })
+                                        })   
+                                }
                             });
+
+                        } else {
+                            mensajeAlert(`Tu correo es: ${correo}`, () => {
+
+                                if (edadEnLocalStorage === null) {
+                                    mostrarPrompt("Ingrese su edad:", "", (valor2) => {
+                                        edad = valor2;
+                                        localStorage.setItem("edad", edad);
+                                            mensajeAlert(`Tienes una edad de: ${edad}`, () => {
+                                                mostrarPrompt("Ingrese su contraseña:", "", (valor3) => {
+                                                    clave = valor3;
+                                                    localStorage.setItem("clave", clave);
+                                                    mensajeAlert(`La contraseña ingresada es: ${clave}`);
+                                                });
+                                            })
+                                    })
+
+                                } else {
+                                    mensajeAlert(`Tu edad es: ${edadEnLocalStorage}`, () => {
+                                        mensajeAlert(`Tu clave es: ${claveEnLocalStorage}`, () => {
+                                            functionAyuda();
+                                        })
+                                    })   
+                                }
+                            }); 
                         }
                     });
-                });
-            });
-        } else if (opcionOtro2 === 2) {
+
+                } else {
+
+                        mensajeAlert(`Tu genero es: ${sexo}`, () => {
+
+                            if (correoEnLocalStorage !== null) {
+                                mensajeAlert(`Tu correo es: ${correoEnLocalStorage}`, () => {
+
+                                    if (edadEnLocalStorage === null) {
+                                        mostrarPrompt("Ingrese su edad:", "", (valor2) => {
+                                            edad = valor2;
+                                            localStorage.setItem("edad", edad);
+                                                mensajeAlert(`Tienes una edad de: ${edad}`, () => {
+                                                    mostrarPrompt("Ingrese su contraseña:", "", (valor3) => {
+                                                        clave = valor3;
+                                                        localStorage.setItem("clave", clave);
+                                                        mensajeAlert(`La contraseña ingresada es: ${clave}`);
+                                                    });
+                                                })
+                                        })
+
+                                    } else {
+                                        mensajeAlert(`Tu edad es: ${edadEnLocalStorage}`, () => {
+                                            mensajeAlert(`Tu clave es: ${claveEnLocalStorage}`, () => {
+                                                functionAyuda();
+                                            })
+                                            })   
+                                    }
+                                });
+
+                            } else {
+                                mensajeAlert(`Tu correo es: ${correo}`, () => {
+
+                                    if (edadEnLocalStorage === null) {
+                                        mostrarPrompt("Ingrese su edad:", "", (valor2) => {
+                                            edad = valor2;
+                                            localStorage.setItem("edad", edad);
+                                            mensajeAlert(`Tienes una edad de: ${edad}`, () => {
+                                                mostrarPrompt("Ingrese su contraseña:", "", (valor3) => {
+                                                    clave = valor3;
+                                                    localStorage.setItem("clave", clave);
+                                                    mensajeAlert(`La contraseña ingresada es: ${clave}`);
+                                                });
+                                            })
+                                        })
+
+                                    } else {
+                                        mensajeAlert(`Tu edad es: ${edadEnLocalStorage}`, () => {
+                                            mensajeAlert(`Tu clave es: ${claveEnLocalStorage}`, () => {
+                                                functionAyuda();
+                                            })
+                                        })   
+                                    }
+                                }); 
+                            }
+                        });
+                    }
+                })
+
+            } else {
+                mensajeAlert(`Tu usuario es: ${usuario}`, () => {
+
+                    if (sexoEnLocalStorage !== null) {
+                        mensajeAlert(`Tu genero es: ${sexoEnLocalStorage}`, () => {
+
+                            if (correoEnLocalStorage !== null) {
+                                mensajeAlert(`Tu correo es: ${correoEnLocalStorage}`, () => {
+
+                                    if (edadEnLocalStorage === null) {
+                                        mostrarPrompt("Ingrese su edad:", "", (valor2) => {
+                                            edad = valor2;
+                                            localStorage.setItem("edad", edad);
+                                            mensajeAlert(`Tienes una edad de: ${edad}`, () => {
+                                                mostrarPrompt("Ingrese su contraseña:", "", (valor3) => {
+                                                    clave = valor3;
+                                                    localStorage.setItem("clave", clave);
+                                                    mensajeAlert(`La contraseña ingresada es: ${clave}`);
+                                                });
+                                            })
+                                        })
+
+                                    } else {
+                                        mensajeAlert(`Tu edad es: ${edadEnLocalStorage}`, () => {
+                                            mensajeAlert(`Tu clave es: ${claveEnLocalStorage}`, () => {
+                                                functionAyuda();
+                                            })
+                                        })   
+                                    }
+                                });
+
+                            } else {
+                                mensajeAlert(`Tu correo es: ${correo}`, () => {
+
+                                    if (edadEnLocalStorage === null) {
+                                        mostrarPrompt("Ingrese su edad:", "", (valor2) => {
+                                            edad = valor2;
+                                            localStorage.setItem("edad", edad);
+                                            mensajeAlert(`Tienes una edad de: ${edad}`, () => {
+                                                mostrarPrompt("Ingrese su contraseña:", "", (valor3) => {
+                                                    clave = valor3;
+                                                    localStorage.setItem("clave", clave);
+                                                    mensajeAlert(`La contraseña ingresada es: ${clave}`);
+                                                });
+                                            })
+                                        })
+
+                                    } else {
+                                        mensajeAlert(`Tu edad es: ${edadEnLocalStorage}`, () => {
+                                            mensajeAlert(`Tu clave es: ${claveEnLocalStorage}`, () => {
+                                                functionAyuda();
+                                            })
+                                        })   
+                                    }
+                                }); 
+                            }
+                        });
+
+                    } else {
+                            mensajeAlert(`Tu genero es: ${sexo}`, () => {
+
+                                if (correoEnLocalStorage !== null) {
+                                    mensajeAlert(`Tu correo es: ${correoEnLocalStorage}`, () => {
+
+                                        if (edadEnLocalStorage === null) {
+                                            mostrarPrompt("Ingrese su edad:", "", (valor2) => {
+                                                edad = valor2;
+                                                localStorage.setItem("edad", edad);
+                                                mensajeAlert(`Tienes una edad de: ${edad}`, () => {
+                                                    mostrarPrompt("Ingrese su contraseña:", "", (valor3) => {
+                                                        clave = valor3;
+                                                        localStorage.setItem("clave", clave);
+                                                        mensajeAlert(`La contraseña ingresada es: ${clave}`);
+                                                    });
+                                                })
+                                            })
+
+                                        } else {
+                                            mensajeAlert(`Tu edad es: ${edadEnLocalStorage}`, () => {
+                                                mensajeAlert(`Tu clave es: ${claveEnLocalStorage}`, () => {
+                                                    functionAyuda();
+                                                })
+                                            })   
+                                        }
+                                    });
+
+                                } else {
+                                    mensajeAlert(`Tu correo es: ${correo}`, () => {
+                                        if (edadEnLocalStorage === null) {
+                                            mostrarPrompt("Ingrese su edad:", "", (valor2) => {
+                                                edad = valor2;
+                                                localStorage.setItem("edad", edad);
+                                                mensajeAlert(`Tienes una edad de: ${edad}`, () => {
+                                                    mostrarPrompt("Ingrese su contraseña:", "", (valor3) => {
+                                                        clave = valor3;
+                                                        localStorage.setItem("clave", clave);
+                                                        mensajeAlert(`La contraseña ingresada es: ${clave}`);
+                                                    });
+                                                })
+                                            })
+
+                                        } else {
+                                            mensajeAlert(`Tu edad es: ${edadEnLocalStorage}`, () => {
+                                                mensajeAlert(`Tu clave es: ${claveEnLocalStorage}`, () => {
+                                                    functionAyuda();
+                                                })
+                                            })   
+                                        }
+                                    }); 
+                                }
+                            });
+                        }
+                    })
+                }
+        }
+
+        else if (opcionOtro2 === 2) {
             Swal.fire({
                 title: `Por favor, comunícate con nosotros desde tu correo electrónico ${correo} a nuestro correo ojalamacetas@gmail.com. ¡Gracias!`,
                 showClass: {
@@ -233,12 +452,16 @@ const opcionOtro = () => {
                   `
                 }
               });
-        } else {
+        
+        } 
+        
+        else {
             Swal.fire({title: "No ingresaste ninguna opcion!", text: "Vuelve a intentarlo!", icon: "error"})
             opcionOtro();
         }
-    });
-};
+    })
+}
+    
 
 const buscarPorId = () => {
     mostrarPrompt("Ingresa el Id del producto que estas buscando. 1 / 2 / 3   SOLO INGRESE EL NUMERO", "", (valor) => {
@@ -325,29 +548,24 @@ const productos = [
     { id: 3, tamaño: "grande", precio: 450 }
 ];
 
-const arregloUsuario = []
-arregloUsuario.push(usuario);
-arregloUsuario.push(sexo);
-arregloUsuario.push(edad);
-arregloUsuario.push(clave);
-arregloUsuario.push(correo);
+let mostrarEmoji = () => {
 
-localStorage.setItem("arregloUsuario", JSON.stringify(arregloUsuario))
+    if (usuarioEnLocalStorage !== null) {
+        fetch("https://emojihub.yurace.pro/api/random")
+        .then((response) => response.json())
+        .then((data) => {
+            Swal.fire({
+            title: `Hola nuevamente ${usuarioEnLocalStorage}!`,
+            text: `Tu categoria es: ${data.category}`,
+            icon: "info"
+            });
+        });
+        functionAyuda();
+    } else {
+        functionUsuario();
+    }
+
+};
 
 
-
-  
-const mostrarEmoji = () => {
-    fetch("https://emojihub.yurace.pro/api/random")
-      .then((response) => response.json())
-      .then((data) => {
-        Swal.fire({ title: "Hola nuevamente!", text: `Tu categoria es: ${data.category}`, icon: "info" });
-      });
-  };
-  
-  mostrarEmoji();
-  
-  
-  
-
-  functionUsuario();
+mostrarEmoji();
